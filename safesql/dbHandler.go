@@ -14,4 +14,11 @@ func (db *DB) QueryContext(ctx context.Context, query TrustedSQL, args ...any) (
 	return r, err
 }
 
-type Rows = sql.Rows
+func (db *DB) ExecContext(ctx context.Context, query TrustedSQL, args ...any) (Result, error) {
+	return db.db.ExecContext(ctx, query.s, args...)
+}
+
+type (
+	Rows   = sql.Rows
+	Result = sql.Result
+)

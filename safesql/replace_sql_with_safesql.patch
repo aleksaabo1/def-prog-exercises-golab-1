@@ -1,0 +1,8 @@
+import "github.com/empijei/def-prog-exercises/safesql/legacyconversions"
+
+--- a
++++ b
+@@ func _() {
+	- $stmt := nh.db.ExecContext($ctx, $query)
+	+ $stmt := nh.db.ExecContext($ctx, legacyconversions.RiskilyAssumeTrustedSQL($query))
+}

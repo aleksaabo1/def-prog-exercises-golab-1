@@ -2,8 +2,9 @@ package app
 
 import (
 	"context"
-	"database/sql"
 	"errors"
+	sql "github.com/empijei/def-prog-exercises/safesql"
+	"github.com/empijei/def-prog-exercises/safesql/legacyconversions"
 	"io"
 	"log"
 	"net/http"
@@ -50,7 +51,7 @@ func (ah *AuthHandler) IsLogged(r *http.Request) bool {
 }
 
 func (ah *AuthHandler) getUserCount(ctx context.Context) (int, error) {
-	rows, err := ah.db.QueryContext(ctx, `SELECT COUNT(*) FROM users`)
+	rows, err := ah.db.QueryContext(ctx, sql.New(`SELECT COUNT(*) FROM users`))
 	if err != nil {
 		return 0, err
 	}
@@ -77,7 +78,7 @@ func (ah *AuthHandler) createDefault(ctx context.Context) error {
 	}
 	log.Println("Default users not found, initializing...")
 	for _, u := range defaultUsers {
-		_, err := ah.db.ExecContext(ctx, `INSERT INTO users(name, password, privileges) VALUES('`+u.Name+`','`+u.password+`','`+u.Privileges+`')`)
+		_, err := ah.db.ExecContext(ctx, legacyconversions.RiskilyAssumeTrustedSQL(`INSERT INTO users(name, password, privileges) VALUES('`+u.Name+`','`+u.password+`','`+u.Privileges+`')`))
 		if err != nil {
 			return err
 		}
